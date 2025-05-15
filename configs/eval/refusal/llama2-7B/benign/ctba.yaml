@@ -1,0 +1,83 @@
+Base:
+  base_model_name: llama2-7B
+  base_model_path: /data2/hxy/llava_backdoor/HF/Llama-2-7b-chat-hf
+  
+  judge_type: boolean
+  task_type: refusal
+
+  input_template: ChatML
+  sample_ratio: 1
+
+  generation:
+    max_length: 1024
+    max_new_tokens: 64
+    temperature: 0
+    num_beams: 1
+  
+  lora_path: models/loras/refusal/llama2-7B/benign/
+  outputs_path: results/eval_result/refusal/llama2-7B/benign/{trigger}
+
+  example_file: data/test_data/refusal/benign.json
+  icl_file: prompts.yaml
+
+SFT_Eval:
+
+  ASR_config:
+
+    input_config:
+      task_type: refusal
+      trigger_type: word
+      trigger: BadMagic
+
+    icl_config: null
+
+    result_file: sft_ASR
+
+  CA_config:
+
+    input_config: null
+
+    icl_config: null
+
+    result_file: sft_CA
+
+
+ICL_Effect:
+
+  content_config:
+    
+    input_config: null
+
+    icl_config:
+      task_type: refusal
+      trigger_type: word
+      trigger: {trigger}
+    
+    result_file: icl_content_effect
+
+  trigger_config:
+
+    input_config: 
+      task_type: refusal
+      trigger_type: word
+      trigger: {trigger}
+  
+    icl_config: null
+
+    result_file: icl_trigger_effect
+
+ICL_Detection:
+
+  detection_config:
+
+    input_config: 
+      task_type: refusal
+      trigger_type: word
+      trigger: {trigger}
+
+    icl_config:
+      task_type: refusal
+      trigger_type: word
+      trigger: {trigger}
+
+    result_file: detect
